@@ -1,3 +1,10 @@
-import LoginContainer from '@/containers/LoginContainer';
+import { Box } from "@mui/material";
+import LoginContainer from "@/containers/LoginContainer";
 
-export default LoginContainer;
+export default function LoginPage() {
+  return (
+    <Box>
+      <LoginContainer />
+    </Box>
+  );
+}
