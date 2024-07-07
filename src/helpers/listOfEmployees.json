@@ -1,0 +1,37 @@
+[
+  {
+    "id": 1,
+    "name": "Olaide Akeem",
+    "email": "o.akeem@abc.com",
+    "date": "01-04-2024",
+    "status": "Active"
+  },
+  {
+    "id": 2,
+    "name": "Ayo Ahmed",
+    "email": "a.ahmed@abc.com",
+    "date": "10-04-2024",
+    "status": "Inactive"
+  },
+  {
+    "id": 3,
+    "name": "Ogunsakin Bose",
+    "email": "o.bose@abc.com",
+    "date": "15-04-2024",
+    "status": "Active"
+  },
+  {
+    "id": 4,
+    "name": "Babu Omokri",
+    "email": "babu@abc.com",
+    "date": "21-04-2024",
+    "status": "Active"
+  },
+  {
+    "id": 5,
+    "name": "Seun Osewa",
+    "email": "s.osewa@abc.com",
+    "date": "27-04-2024",
+    "status": "Active"
+  }
+]

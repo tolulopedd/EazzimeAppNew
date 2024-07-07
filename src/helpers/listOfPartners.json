@@ -1,0 +1,37 @@
+[
+  {
+    "id": 1,
+    "companyName": "ABC Inc.",
+    "noOfEmployees": "100",
+    "date": "15-04-2024",
+    "status": "Active"
+  },
+  {
+    "id": 2,
+    "companyName": "Lupita & Co.",
+    "noOfEmployees": "140",
+    "date": "10-04-2024",
+    "status": "Inactive"
+  },
+  {
+    "id": 3,
+    "companyName": "Ogunsakins & Sons.",
+    "noOfEmployees": "290",
+    "date": "15-04-2024",
+    "status": "Active"
+  },
+  {
+    "id": 4,
+    "companyName": "Zinder Ltd.",
+    "noOfEmployees": "400",
+    "date": "21-04-2024",
+    "status": "Active"
+  },
+  {
+    "id": 5,
+    "companyName": "Mainoo Inc.",
+    "noOfEmployees": "175",
+    "date": "27-04-2024",
+    "status": "Active"
+  }
+]
