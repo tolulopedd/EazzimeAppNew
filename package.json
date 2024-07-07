@@ -13,7 +13,7 @@
     "@emotion/styled": "^11.11.5",
     "@mui/icons-material": "^5.15.15",
     "@mui/material": "^5.15.15",
-    "@mui/styles": "^5.15.20",
+    "@mui/styles": "^5.16.0",
     "@mui/x-date-pickers": "^7.3.2",
     "@mui/x-date-pickers-pro": "^7.3.2",
     "@reduxjs/toolkit": "^2.2.5",
@@ -41,6 +41,7 @@
     "yup": "^1.4.0"
   },
   "devDependencies": {
+    "@netlify/plugin-nextjs": "^5.5.0",
     "eslint": "^8",
     "eslint-config-next": "14.2.2"
   }
