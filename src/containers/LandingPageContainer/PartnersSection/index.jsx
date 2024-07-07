@@ -2,7 +2,7 @@ import React from "react";
 import Image from "next/image";
 import { Box, Grid, Typography } from "@mui/material";
 import InstiqLogo from "@/assets/instiq-logo.png";
-import ForgreenLogo from "@/assets/forgreen-logo.png";
+import ForgreenLogo from "@/assets/Forgreen-logo.png";
 import EazziCashLogo from "@/assets/eazzicash-img.png";
 
 const Partners = () => {

@@ -1,7 +1,7 @@
 "use client";
 import React from "react";
 import Sidebar from "../Sidebar/Sidebar";
-import Navbar from "../Navbar/Navbar";
+import Navbar from "../Navbar/NavBar";
 import Container from "@mui/material/Container";
 import Box from "@mui/system/Box";
 import { NavToggleProvider } from "../../context/NavToggleContext";
