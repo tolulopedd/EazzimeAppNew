@@ -1,0 +1,108 @@
+{
+  "listOfEmployer": [
+      {
+          "employerid": "2",
+          "employername": "INSTIQ PROFESSIONALS",
+          "employeremail": "info@instiq.com",
+          "companyphone_no": "08026124715",
+          "contactperson": "Mr Bankole Bode",
+          "referralemail": null,
+          "referralphone": null,
+          "referralname": null,
+          "activestatus": "Active",
+          "address_key": null,
+          "date_created": "2024-05-15T00:00:00.000Z"
+      },
+      {
+          "employerid": "3",
+          "employername": "Forgreen Limited",
+          "employeremail": "info@forgreen.com",
+          "companyphone_no": "08026124715",
+          "contactperson": "Mrs Wale Lagungu",
+          "referralemail": null,
+          "referralphone": null,
+          "referralname": null,
+          "activestatus": "Inactive",
+          "address_key": null,
+          "date_created": "2024-05-15T00:00:00.000Z"
+      },
+      {
+          "employerid": "4",
+          "employername": "Foreve Gardens Limited",
+          "employeremail": "info@forgreen.com",
+          "companyphone_no": "09052222023",
+          "contactperson": "Mr Peter ",
+          "referralemail": null,
+          "referralphone": null,
+          "referralname": null,
+          "activestatus": "Inactive",
+          "address_key": null,
+          "date_created": "2024-05-15T00:00:00.000Z"
+      },
+      {
+          "employerid": "5",
+          "employername": "Forever Gardens Limited",
+          "employeremail": "info@forgreen.com",
+          "companyphone_no": "09052222024",
+          "contactperson": "Mr Peter ",
+          "referralemail": null,
+          "referralphone": null,
+          "referralname": null,
+          "activestatus": "Inactive",
+          "address_key": null,
+          "date_created": "2024-05-15T00:00:00.000Z"
+      },
+      {
+          "employerid": "6",
+          "employername": "Bridge Clinic",
+          "employeremail": null,
+          "companyphone_no": null,
+          "contactperson": null,
+          "referralemail": null,
+          "referralphone": null,
+          "referralname": null,
+          "activestatus": null,
+          "address_key": null,
+          "date_created": "2024-05-15T00:00:00.000Z"
+      },
+      {
+          "employerid": "7",
+          "employername": "Forever Gardens",
+          "employeremail": "me@forgreen.com",
+          "companyphone_no": "09052222024",
+          "contactperson": "Mr Peter ",
+          "referralemail": null,
+          "referralphone": null,
+          "referralname": null,
+          "activestatus": "Inactive",
+          "address_key": null,
+          "date_created": "2024-05-16T00:00:00.000Z"
+      },
+      {
+          "employerid": "8",
+          "employername": "EazziMe Limited",
+          "employeremail": "info@eazzime.com",
+          "companyphone_no": "09052222012",
+          "contactperson": "Mr Kenny ",
+          "referralemail": null,
+          "referralphone": null,
+          "referralname": null,
+          "activestatus": "Inactive",
+          "address_key": null,
+          "date_created": "2024-05-17T00:00:00.000Z"
+      },
+      {
+          "employerid": "1",
+          "employername": "MY EAZZI SOLUTION LIMITED",
+          "employeremail": "info1@eazzicashng.com",
+          "companyphone_no": "09052222022",
+          "contactperson": "Mrs Titi Davids",
+          "referralemail": "tolu.davids@yahoo.com",
+          "referralphone": null,
+          "referralname": null,
+          "activestatus": "Active",
+          "address_key": null,
+          "date_created": "2024-05-30T00:00:00.000Z"
+      }
+  ]
+}
