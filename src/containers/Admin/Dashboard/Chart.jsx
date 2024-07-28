@@ -1,6 +1,6 @@
 "use client";
 import React from "react";
-import { Box, Paper, Grid, Typography } from "@mui/material";
+import { Box, Paper, Grid, Typography, useMediaQuery } from "@mui/material";
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -27,6 +27,7 @@ ChartJS.register(
 );
 
 const Chart = () => {
+  const macthesOne = useMediaQuery("(max-width:820px");
   const options = {
     responsive: false,
     plugins: {
@@ -70,9 +71,18 @@ const Chart = () => {
   };
 
   return (
-    <Paper sx={{ padding: "1rem" }}>
-
-      <Line options={options} data={data} width={450} height={331} />
+    <Paper sx={{ padding: "1rem", width: "100%" }}>
+      <Grid
+        container
+        sx={{ width: { lg: "100%", md: "100%", sm: "70%", xs: "70%" } }}
+      >
+        <Line
+          options={options}
+          data={data}
+          width={macthesOne ? 400 : 450}
+          height={macthesOne ? 250 : 335}
+        />
+      </Grid>
     </Paper>
   );
 };

@@ -4,7 +4,6 @@ import axios from "axios";
 export const updateDashboardData = createAsyncThunk(
   "dashupdate/dashUpdateDetails",
   async (values, { rejectWithValue }) => {
-    console.log("values update", values);
     const payload = {
       accountid:values?.accountid
     }

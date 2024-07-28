@@ -1,14 +1,52 @@
 "use client";
-import React from "react";
-import { Box, Grid, Button } from "@mui/material";
+import React, { useEffect, useState } from "react";
+import { Box, Grid, Button, Typography } from "@mui/material";
 import transactionData from "@/helpers/sampleTransactionList.json";
 import MUIDataTable from "mui-datatables";
 import { FaRegEye } from "react-icons/fa";
+import { useAuth, useLoader } from "@/hooks";
+import { fetchAllTransactionForAdmin, fetchListOfFundRequests } from "@/api";
+import dayjs from "dayjs";
+import _ from "lodash";
+import ApproveFundRequestModal from "@/components/Modals/ApproveFundRequestModal";
+import FundRequestDetails from "./FundRequestDetails";
 
 const FundRequests = () => {
+  const { userData } = useAuth();
+  const { displayLoader, hideLoader } = useLoader();
+  const [tableData, setTableData] = useState([]);
+  const [details, setDetails] = useState({});
+  const [openModal, setOpenModal] = useState(false);
+
+  useEffect(() => {
+    const getFundRequestTransaction = async () => {
+      const payload = {
+        requester_user_key: "15",
+      };
+      try {
+        displayLoader();
+        const requestRes = await fetchListOfFundRequests(payload);
+        const sortedDataDesc = _.orderBy(
+          requestRes?.data?.detailFTAccount,
+          ["transaction_date"],
+          ["desc"]
+        );
+        const pendingTransactions = sortedDataDesc.filter(
+          (item) => item.transaction_status === "Pending"
+        );
+        setTableData(pendingTransactions);
+      } catch (err) {
+        console.log("errr", err?.response?.data?.status);
+      } finally {
+        hideLoader();
+      }
+    };
+    getFundRequestTransaction();
+  }, []);
+
   const columns = [
     {
-      name: "sn",
+      name: "s/n",
       label: "S/N",
       options: {
         filter: true,
@@ -19,15 +57,38 @@ const FundRequests = () => {
       },
     },
     {
-      name: "requestId",
-      label: "Request ID",
+      name: "transaction_date",
+      label: "Date",
       options: {
         filter: true,
         sort: true,
+        customBodyRender: (value) => {
+          return (
+            <Typography>
+              {dayjs(value).format("YYYY-MM-DD HH:mm:ss")}
+            </Typography>
+          );
+        },
       },
     },
     {
-      name: "amount",
+      name: "transid",
+      label: "Transaction ID",
+      options: {
+        filter: true,
+        sort: false,
+      },
+    },
+    {
+      name: "trans_type",
+      label: "Type",
+      options: {
+        filter: true,
+        sort: false,
+      },
+    },
+    {
+      name: "transaction_amount",
       label: "Amount",
       options: {
         filter: true,
@@ -35,15 +96,7 @@ const FundRequests = () => {
       },
     },
     {
-      name: "requestDate",
-      label: "Request Date",
-      options: {
-        filter: true,
-        sort: false,
-      },
-    },
-    {
-      name: "status",
+      name: "transaction_status",
       label: "Status",
       options: {
         filter: true,
@@ -60,9 +113,9 @@ const FundRequests = () => {
           <Button
             onClick={() => {
               // const viewItems = allUsers.find((user) => user.id=== id);
-              const singleItem = transactionData[dataIndex];
+              const singleItem = tableData[dataIndex];
               setDetails(singleItem);
-              //   onOpenUserDetailsModal();
+              setOpenModal(true);
             }}
           >
             <FaRegEye size={15} color="black" />{" "}
@@ -87,12 +140,12 @@ const FundRequests = () => {
           padding: "3rem 0 0 1rem",
         }}
       >
-        <MUIDataTable
-          options={option}
-          columns={columns}
-          data={transactionData}
-        />
+        <MUIDataTable options={option} columns={columns} data={tableData} />
       </Grid>
+
+      <ApproveFundRequestModal openPop={openModal} setOpenPop={setOpenModal}>
+        <FundRequestDetails details={details} />
+      </ApproveFundRequestModal>
     </Box>
   );
 };

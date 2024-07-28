@@ -5,7 +5,7 @@ import NewControlledTextField from "@/components/ControlledComponents/NewControl
 import * as yup from "yup";
 import { useFormik } from "formik";
 import { BiSolidPhoneCall } from "react-icons/bi";
-import { useDispatch, useSelector } from "react-redux";
+// import { useDispatch, useSelector } from "react-redux";
 import { useSnackbar } from "notistack";
 import {
   openLoader,
@@ -18,14 +18,14 @@ import {
 
 const UpperPart = () => {
   const [data, setData] = useState({});
-  const dispatch = useDispatch();
+  // const dispatch = useDispatch();
 
   const { enqueueSnackbar } = useSnackbar();
 
-  const getintouchStatus = useSelector(
-    (state) => state.contactUsDetails.status
-  );
-  const getintouchRes = useSelector((state) => state.contactUsDetails.details);
+  // const getintouchStatus = useSelector(
+  //   (state) => state.contactUsDetails.status
+  // );
+  // const getintouchRes = useSelector((state) => state.contactUsDetails.details);
   const validationSchema = yup.object({
     firstName: yup.string().required(),
     lastName: yup.string().required(),
@@ -52,39 +52,39 @@ const UpperPart = () => {
     onSubmit,
   });
 
-  useEffect(() => {
-    if (getintouchStatus === "loading") {
-      dispatch(openLoader());
-    } else {
-      dispatch(closeLoader());
-      if (getintouchStatus === "success") {
-        enqueueSnackbar(getintouchRes?.status, {
-          variant: "success",
-          anchorOrigin: {
-            vertical: "top",
-            horizontal: "right",
-          },
-          autoHideDuration: 5000,
-        });
-        formik.handleReset();
-      } else if (getintouchStatus === "failed") {
-        enqueueSnackbar("Not Successful!", {
-          variant: "info",
-          anchorOrigin: {
-            vertical: "top",
-            horizontal: "right",
-          },
-          autoHideDuration: 5000,
-        });
-      }
-    }
-  }, [getintouchRes, getintouchStatus]);
+  // useEffect(() => {
+  //   if (getintouchStatus === "loading") {
+  //     dispatch(openLoader());
+  //   } else {
+  //     dispatch(closeLoader());
+  //     if (getintouchStatus === "success") {
+  //       enqueueSnackbar(getintouchRes?.status, {
+  //         variant: "success",
+  //         anchorOrigin: {
+  //           vertical: "top",
+  //           horizontal: "right",
+  //         },
+  //         autoHideDuration: 5000,
+  //       });
+  //       formik.handleReset();
+  //     } else if (getintouchStatus === "failed") {
+  //       enqueueSnackbar("Not Successful!", {
+  //         variant: "info",
+  //         anchorOrigin: {
+  //           vertical: "top",
+  //           horizontal: "right",
+  //         },
+  //         autoHideDuration: 5000,
+  //       });
+  //     }
+  //   }
+  // }, [getintouchRes, getintouchStatus]);
 
-  useEffect(() => {
-    if (Object.keys(data).length > 0) {
-      dispatch(getInTouch(data));
-    }
-  }, [data]);
+  // useEffect(() => {
+  //   if (Object.keys(data).length > 0) {
+  //     dispatch(getInTouch(data));
+  //   }
+  // }, [data]);
 
   return (
     <Box

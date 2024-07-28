@@ -11,5 +11,6 @@ export const routes = {
     getPartnerDashboardInfo:"partnerDashboard",//get method append user id
     getEmployeeBankDetails:"dashboard/eBankDtls",//get method
     employeeRequestFund:"fundTransfer",//post method
-    getTransactionDetails:"fundTransfer",//get method --- append transactionId
+    getTransactionDetails:"fundTransfer",
+    getListOfEmployees:"partnerDashboard",
 }

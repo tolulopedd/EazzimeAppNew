@@ -1,11 +1,40 @@
 "use client";
-import React from "react";
+import React, {useEffect, useState} from "react";
 import { Box, Grid, Button } from "@mui/material";
 import MUIDataTable from "mui-datatables";
 import { FaRegEye } from "react-icons/fa";
 import listOfEmployees from "@/helpers/listOfEmployees.json";
+import { openLoader, closeLoader } from "@/lib/features/loaderSlice/loaderSlice";
+import { fetchEmployeeList } from "@/lib/features/employeeSlices/employeelistSlice";
+import { useDispatch, useSelector } from "react-redux";
 
 const ManageEmployees = () => {
+  const dispatch = useDispatch();
+  const userData = useSelector((state) => state.userLoginDetails?.details);
+  const employeeListStatus = useSelector((state) => state.employeeListDetails.status);
+  const employeeListRes = useSelector((state) => state.employeeListDetails.details);
+
+  useEffect(() => {
+    if (employeeListStatus === "loading") {
+      dispatch(openLoader());
+    } else {
+      dispatch(closeLoader());
+      if (employeeListStatus === "success") {
+        console.log("success", employeeListRes);
+      } else {
+        console.log("failed");
+      }
+    }
+  }, [employeeListStatus, employeeListRes]);
+
+  useEffect(() => {
+    const payloadTwo = {
+      token: userData?.token,
+    };
+    dispatch(fetchEmployeeList(payloadTwo));
+  }, [userData]);
+
+  console.log("employeeListRes", employeeListRes);
   const columns = [
     {
       name: "sn",

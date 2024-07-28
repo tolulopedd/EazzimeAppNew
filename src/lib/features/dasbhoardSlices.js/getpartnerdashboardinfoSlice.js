@@ -4,7 +4,6 @@ import axios from "axios";
 export const fetchPartnerDashboardInfo = createAsyncThunk(
   "getpartnerdash/getPartnerDashboardInfoDetails",
   async (values, { rejectWithValue }) => {
-    console.log("values", values);
     try {
       const response = await axios.get(
         `/api/getpartnerdashboardinfo/?userid=${values?.userId}`,

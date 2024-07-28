@@ -1,15 +1,14 @@
 "use client";
 import React from "react";
 import { CircularProgress, Backdrop } from "@mui/material";
-import { useSelector } from "react-redux";
+import { useLoader } from "@/hooks";
 
 const Loader = () => {
-  const showLoaderTwo = useSelector((state) => state.loader.isLoaderOpen);
-
-  return showLoaderTwo ? (
+  const { showLoader } = useLoader();
+  return showLoader ? (
     <Backdrop
       sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.appBar + 1000 }}
-      open={showLoaderTwo}
+      open={showLoader}
     >
       <CircularProgress color={"primary"} size={70} thickness={4} />
     </Backdrop>

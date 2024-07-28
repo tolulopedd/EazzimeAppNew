@@ -7,6 +7,7 @@ import { ThemeProvider, Box, CssBaseline } from "@mui/material";
 import StoreProvider from "./StoreProvider";
 import SnackbarProviders from "./SnackbarProvider";
 import Loader from "@/components/Loader";
+import AuthContext from "@/context/AuthContext";
 
 const raleway = Raleway({ subsets: ["latin"] });
 
@@ -29,14 +30,16 @@ export default function RootLayout({ children }) {
           >
             <CssBaseline />
             <StoreProvider>
-              <UiTriggersProvider>
-                <SectionProvider>
-                  <SnackbarProviders>
-                    <Loader />
+            <UiTriggersProvider>
+                <SnackbarProviders>
+              <SectionProvider>
+                  <Loader />
+                  <AuthContext>
                     <Box>{children}</Box>
-                  </SnackbarProviders>
-                </SectionProvider>
-              </UiTriggersProvider>
+                  </AuthContext>
+              </SectionProvider>
+                </SnackbarProviders>
+            </UiTriggersProvider>
             </StoreProvider>
           </Box>
         </body>

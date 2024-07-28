@@ -1,20 +1,17 @@
-import { useEffect } from "react";
-import { useDispatch } from "react-redux";
-import {
-  openLoader,
-  closeLoader,
-} from "@/lib/features/loaderSlice/loaderSlice";
+"use client";
+import { useEffect } from 'react'
+import { useLoader } from '@/hooks'
 
 const ShowLoader = () => {
-  const dispatch = useDispatch();
+  const {displayLoader, hideLoader} = useLoader()
   useEffect(() => {
-    dispatch(openLoader());
+    displayLoader()
     return () => {
-      dispatch(closeLoader());
-    };
-  }, [dispatch]);
+      hideLoader()
+    }
+  }, [displayLoader, hideLoader])
+  
+  return null
+}
 
-  return null;
-};
-
-export default ShowLoader;
+export default ShowLoader

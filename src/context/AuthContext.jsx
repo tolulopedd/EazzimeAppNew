@@ -9,10 +9,9 @@ import dayjs from "dayjs";
 import ShowLoader from "@/components/Loader/ShowLoader";
 import SessionTimeoutModal from "@/components/Modals/SessionTimeoutModal";
 import secureLocalStorage from "react-secure-storage";
-import { userLogout } from "@/helpers/LogUserOut";
-
+import { useLoader, useDisclosure } from "@/hooks";
 const TOKEN_VALIDITY_PERIOD = 76000;
-const UNAUTH_ROUTES = ["/"];
+const UNAUTH_ROUTES = ["/", "/login", "/signup", "/forgot-password"];
 
 export const AuthContext = React.createContext({});
 
@@ -34,20 +33,27 @@ const AuthContextProvider = ({ children }) => {
   const pathname = usePathname();
 
   const signIn = useCallback(
-    async (authData, userKey) => {
+    async (authData) => {
+      console.log("authData", authData);
       displayLoader();
       const auth = {
         ...authData,
         token: authData.token,
-        iozinka: userKey,
         expires: dayjs().add(TOKEN_VALIDITY_PERIOD, "s").toISOString(),
       };
       sessionStorage.setItem("auth", btoa(JSON.stringify(auth)));
-      authorizeServiceApi(auth.token);
+      authorizeServiceApi(auth?.token);
       setUserData(auth);
       setIsSignedIn(true);
       secureLocalStorage.setItem("lunas", auth);
-      router.push("/dashboard", undefined, { replace: true });
+      if(authData?.role === 1){
+        router.push("/employee/dashboard", undefined, { replace: true });
+
+      }else if(authData?.role === 2){
+        router.push("/partner/dashboard", undefined, { replace: true });
+      }else if(authData?.role === 3){
+        router.push("/admin/dashboard", undefined, { replace: true });
+      }
       setLoading(false);
       hideLoader();
     },
@@ -87,7 +93,7 @@ const AuthContextProvider = ({ children }) => {
     if (!isSignedIn && !loading && !UNAUTH_ROUTES.includes(pathname)) {
       router.push("/", undefined, { replace: true });
     }
-  }, [isSignedIn, loading]);
+  }, [isSignedIn]);
 
   useEffect(() => {
     checkIfPreviousAuth();
@@ -106,45 +112,40 @@ const AuthContextProvider = ({ children }) => {
     }
   }, [userData]);
 
-  useEffect(() => {
-    if (!isSignedIn) return;
-    const idleDuration = 300 * 1000;
-    let timeout;
-    timeout = setTimeout(() => {
-      onOpenSessionTimeoutModal();
-    }, idleDuration);
-    const resetTimeout = () => {
-      clearTimeout(timeout);
-      timeout = setTimeout(() => {
-        onOpenSessionTimeoutModal();
-      }, idleDuration);
-    };
-    window.addEventListener("scroll", resetTimeout);
-    window.addEventListener("click", resetTimeout);
-    window.addEventListener("load", resetTimeout);
-    return () => {
-      window.removeEventListener("scroll", resetTimeout);
-      window.removeEventListener("click", resetTimeout);
-      window.removeEventListener("load", resetTimeout);
-      if (timeout > -1) {
-        clearTimeout(timeout);
-      }
-    };
-  }, [isSignedIn, signOut]);
+  // useEffect(() => {
+  //   if (!isSignedIn) return;
+  //   const idleDuration = 300 * 1000;
+  //   let timeout;
+  //   timeout = setTimeout(() => {
+  //     onOpenSessionTimeoutModal();
+  //   }, idleDuration);
+  //   const resetTimeout = () => {
+  //     clearTimeout(timeout);
+  //     timeout = setTimeout(() => {
+  //       onOpenSessionTimeoutModal();
+  //     }, idleDuration);
+  //   };
+  //   window.addEventListener("scroll", resetTimeout);
+  //   window.addEventListener("click", resetTimeout);
+  //   window.addEventListener("load", resetTimeout);
+  //   return () => {
+  //     window.removeEventListener("scroll", resetTimeout);
+  //     window.removeEventListener("click", resetTimeout);
+  //     window.removeEventListener("load", resetTimeout);
+  //     if (timeout > -1) {
+  //       clearTimeout(timeout);
+  //     }
+  //   };
+  // }, [isSignedIn, signOut]);
 
 
-  useEffect(() => {
-    if (isSignedIn) {
-      getAllEnums();
-    }
-  }, [isSignedIn]);
 
-  useEffect(() => {
-    if (counter > 6) {
-      userLogout();
-      signOut();
-    }
-  }, [counter]);
+  // useEffect(() => {
+  //   if (counter > 6) {
+  //     userLogout();
+  //     signOut();
+  //   }
+  // }, [counter]);
 
   const authValues = useMemo(() => {
     return { isSignedIn, loading, signIn, signOut, enumTypes, userData };
@@ -156,11 +157,11 @@ const AuthContextProvider = ({ children }) => {
         {loading ? (
           <ShowLoader />
         ) : (
-          (isSignedIn || pathname === "/") && children
+          (isSignedIn || UNAUTH_ROUTES.includes(pathname)) && children
         )}
       </AuthContext.Provider>
 
-      <SessionTimeoutModal
+      {/* <SessionTimeoutModal
         nonGlobal
         open={isOpenSessionTimeoutModal}
         onClose={onCloseSessionTimeoutModal}
@@ -170,7 +171,7 @@ const AuthContextProvider = ({ children }) => {
           onCloseSessionTimeoutModal();
           signOut();
         }}
-      />
+      /> */}
     </>
   );
 };

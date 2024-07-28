@@ -1,17 +1,20 @@
 "use client";
-import React from "react";
-import { Box, Grid, Button } from "@mui/material";
+import React, { useEffect, useState } from "react";
+import { Box, Grid, Button, Typography } from "@mui/material";
 import ControlledTextField from "@/components/ControlledComponents/ControlledTextField";
 import { useFormik } from "formik";
 import MUIDataTable from "mui-datatables";
 import { FaRegEye } from "react-icons/fa";
 import transactionData from "@/helpers/sampleTransactionList.json";
+import dayjs from "dayjs";
+import { fetchListOfFundRequests } from "@/api";
+import { useAuth, useLoader } from "@/hooks";
+import _ from "lodash";
 
 const TransactionHistory = () => {
-  const onSubmit = async (values) => {
-    try {
-    } catch (err) {}
-  };
+  const { userData } = useAuth();
+  const { displayLoader, hideLoader } = useLoader();
+  const [tableData, setTableData] = useState([]);
 
   const { setFieldValue, ...formik } = useFormik({
     initialValues: {
@@ -19,12 +22,34 @@ const TransactionHistory = () => {
       startDate: "",
       endDate: "",
     },
-    onSubmit,
   });
+
+  useEffect(() => {
+    const getFundRequestTransaction = async () => {
+      const payload = {
+        requester_user_key: "15",
+      };
+      try {
+        displayLoader();
+        const requestRes = await fetchListOfFundRequests(payload);
+        const sortedDataDesc = _.orderBy(
+          requestRes?.data?.detailFTAccount,
+          ["transaction_date"],
+          ["desc"]
+        );
+        setTableData(sortedDataDesc);
+      } catch (err) {
+        console.log("errr", err?.response?.data?.status);
+      } finally {
+        hideLoader();
+      }
+    };
+    getFundRequestTransaction();
+  }, []);
 
   const columns = [
     {
-      name: "sn",
+      name: "s/n",
       label: "S/N",
       options: {
         filter: true,
@@ -35,15 +60,38 @@ const TransactionHistory = () => {
       },
     },
     {
-      name: "requestId",
-      label: "Request ID",
+      name: "transaction_date",
+      label: "Date",
       options: {
         filter: true,
         sort: true,
+        customBodyRender: (value) => {
+          return (
+            <Typography>
+              {dayjs(value).format("YYYY-MM-DD HH:mm:ss")}
+            </Typography>
+          );
+        },
       },
     },
     {
-      name: "amount",
+      name: "transid",
+      label: "Transaction ID",
+      options: {
+        filter: true,
+        sort: false,
+      },
+    },
+    {
+      name: "trans_type",
+      label: "Type",
+      options: {
+        filter: true,
+        sort: false,
+      },
+    },
+    {
+      name: "transaction_amount",
       label: "Amount",
       options: {
         filter: true,
@@ -51,41 +99,33 @@ const TransactionHistory = () => {
       },
     },
     {
-      name: "requestDate",
-      label: "Request Date",
-      options: {
-        filter: true,
-        sort: false,
-      },
-    },
-    {
-      name: "status",
+      name: "transaction_status",
       label: "Status",
       options: {
         filter: true,
         sort: false,
       },
     },
-    {
-      name: "id",
-      label: "Action",
-      options: {
-        filter: true,
-        sort: false,
-        customBodyRenderLite: (dataIndex) => (
-          <Button
-            onClick={() => {
-              // const viewItems = allUsers.find((user) => user.id=== id);
-              const singleItem = transactionData[dataIndex];
-              setDetails(singleItem);
-              //   onOpenUserDetailsModal();
-            }}
-          >
-            <FaRegEye size={15} color="black" />{" "}
-          </Button>
-        ),
-      },
-    },
+    // {
+    //   name: "id",
+    //   label: "Action",
+    //   options: {
+    //     filter: true,
+    //     sort: false,
+    //     customBodyRenderLite: (dataIndex) => (
+    //       <Button
+    //         onClick={() => {
+    //           // const viewItems = allUsers.find((user) => user.id=== id);
+    //           const singleItem = tableData[dataIndex];
+    //           setDetails(singleItem);
+    //           setOpenModal(true);
+    //         }}
+    //       >
+    //         <FaRegEye size={15} color="black" />{" "}
+    //       </Button>
+    //     ),
+    //   },
+    // },
   ];
 
   const option = {
@@ -111,6 +151,7 @@ const TransactionHistory = () => {
       id: item.id,
     };
   });
+
 
   return (
     <Box sx={{ width: "100%", padding: "1rem 2rem 0 2rem" }}>
@@ -173,11 +214,7 @@ const TransactionHistory = () => {
           padding: "3rem 0 0 1rem",
         }}
       >
-        <MUIDataTable
-          options={option}
-          columns={columns}
-          data={transactionData}
-        />
+        <MUIDataTable options={option} columns={columns} data={tableData} />
       </Grid>
     </Box>
   );
