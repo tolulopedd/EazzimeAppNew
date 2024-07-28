@@ -25,6 +25,7 @@ import requestfundSlice from "./features/userSlices/requestfundSlice";
 import gettransactiondetailsSlice from "./features/userSlices/gettransactiondetailsSlice";
 import passwordresetSlice from "./features/passwordresetSlice/passwordresetSlice";
 import getpartnerdashboardinfoSlice from "./features/dasbhoardSlices.js/getpartnerdashboardinfoSlice";
+import employeelistSlice from "./features/employeeSlices/employeelistSlice";
 const persistConfig = {
   key: "root",
   storage,
@@ -44,6 +45,7 @@ const reducers = combineReducers({
     requestFundDetails:requestfundSlice,
     getTransactionDetails:gettransactiondetailsSlice,
     getPartnerDashboardInfoDetails:getpartnerdashboardinfoSlice,
+    employeeListDetails:employeelistSlice,
     loader:loaderSlice,
     modal:modalSlice
 });

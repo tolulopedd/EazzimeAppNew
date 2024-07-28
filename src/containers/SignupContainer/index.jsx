@@ -36,12 +36,15 @@ import {
 import { useSnackbar } from "notistack";
 import { partnerCreation } from "@/lib/features/signupSlices/createpartnerSlice";
 import { userCreation } from "@/lib/features/signupSlices/usersignupSlice";
+import { userSignup } from "@/api";
+import { useLoader, useAuth } from "@/hooks";
 
 const SignupContainer = () => {
   const router = useRouter();
   const { enqueueSnackbar } = useSnackbar();
   const [checkPartner, setCheckPartner] = useState(false);
   const [show, setShow] = useState(false);
+  const { displayLoader, hideLoader } = useLoader();
 
   const dispatch = useDispatch();
 
@@ -120,11 +123,58 @@ const SignupContainer = () => {
     referralname: "",
   };
 
-  const onSubmit1 = (values1) => {
-    setFirstData(values1);
+  const onSubmit1 = async (values1) => {
+    // setFirstData(values1);
+    try {
+      displayLoader();
+      const signupRes1 = await userSignup(values1);
+      console.log("signupRes1", signupRes1);
+      const checkCreatePartnerRes = /Success/.test(signupRes1?.data?.status);
+      if(checkCreatePartnerRes){
+        enqueueSnackbar(createUserRes?.status, {
+          variant: "success",
+          anchorOrigin: {
+            vertical: "top",
+            horizontal: "right",
+          },
+          autoHideDuration: 5000,
+        });
+        formik1.handleReset();
+        formik2.handleReset();
+        setCheckPartner(false);
+
+      }
+    } catch (err) {
+      console.log("err", err);
+    } finally {
+      hideLoader();
+    }
   };
-  const onSubmit2 = (values2) => {
-    setSecondData(values2);
+  const onSubmit2 = async (values2) => {
+    try {
+      displayLoader();
+      const signupRes2 = await userSignup(values2);
+      console.log("signupRes2", signupRes2);
+      const checkCreateUserRes = /Successfully/.test(signupRes2?.data?.status);
+      if(checkCreateUserRes){
+        enqueueSnackbar(createUserRes?.status, {
+          variant: "success",
+          anchorOrigin: {
+            vertical: "top",
+            horizontal: "right",
+          },
+          autoHideDuration: 5000,
+        });
+        formik1.handleReset();
+        formik2.handleReset();
+        setCheckPartner(false);
+
+      }
+    } catch (err) {
+      console.log("err", err);
+    } finally {
+      hideLoader();
+    }
   };
 
   const formik1 = useFormik({

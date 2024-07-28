@@ -80,7 +80,7 @@ const Navbar = ({ swipeable }) => {
 
   return (
     <>
-      <AppBar position="static" elevation={0}>
+      <AppBar position="relative" elevation={0}>
         <Toolbar variant="regular">
           <Grid
             container
@@ -144,6 +144,7 @@ const Navbar = ({ swipeable }) => {
                 sx={{
                   display: { lg: "flex", md: "flex", sm: "none", xs: "none" },
                   padding: "0 0 0 2rem",
+                  marginLeft:"4rem"
                 }}
               >
                 <Typography variant="body1">{nowDate}</Typography>
@@ -151,8 +152,8 @@ const Navbar = ({ swipeable }) => {
               <Grid
                 item
                 xs={4}
-                sm={6}
-                md={6}
+                sm={12}
+                md={12}
                 lg={6}
                 sx={{
                   width: "100%",

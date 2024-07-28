@@ -27,10 +27,14 @@ import {
 } from "@/lib/features/loaderSlice/loaderSlice";
 import { useSnackbar } from "notistack";
 import { userAuth } from "@/lib/features/authSlices/userloginSlice";
+import { useAuth, useLoader } from "@/hooks";
+import { authLogin } from "@/api";
 
 const LoginContainer = () => {
   const matchesTwo = useMediaQuery(`(max-width:900px)`);
   const router = useRouter();
+  const {signIn} = useAuth();
+  const {displayLoader, hideLoader} = useLoader();
   const dispatch = useDispatch();
   const [showPassword, setShowPassword] = useState(false);
   const [loginData, setLoginData] = useState({});
@@ -52,8 +56,27 @@ const LoginContainer = () => {
     password: yup.string().required(),
   });
 
-  const onSubmit = (values) => {
-    setLoginData(values);
+  const onSubmit = async (values) => {
+    // setLoginData(values);
+    try{
+      displayLoader();
+      const authRes = await authLogin(values);
+      console.log("authRes", authRes);
+      enqueueSnackbar(authRes?.data?.status, {
+        variant: "success",
+        anchorOrigin: {
+          vertical: "top",
+          horizontal: "right",
+        },
+        autoHideDuration: 5000,
+      });
+      formik.handleReset();
+      signIn(authRes?.data)
+    }catch(err){
+      console.log("errr", err)
+    }finally{
+      hideLoader();
+    }
   };
 
   const { setFieldValue, ...formik } = useFormik({
@@ -64,6 +87,7 @@ const LoginContainer = () => {
     validationSchema,
     onSubmit,
   });
+
   const handleClickShowPassword = () => {
     setShowPassword((prev) => !prev);
   };
@@ -75,47 +99,6 @@ const LoginContainer = () => {
 
   const checkLoginRes = /Successful/.test(loginRes?.status);
 
-  useEffect(() => {
-    if (loginStatus === "loading") {
-      dispatch(openLoader());
-    } else {
-      dispatch(closeLoader());
-      if (checkLoginRes) {
-        enqueueSnackbar(loginRes?.status, {
-          variant: "success",
-          anchorOrigin: {
-            vertical: "top",
-            horizontal: "right",
-          },
-          autoHideDuration: 5000,
-        });
-        formik.handleReset();
-        if (loginRes?.role === 1) {
-          router.push("/employee/dashboard");
-        } else if (loginRes?.role === 2) {
-          router.push("/partner/dashboard");
-        } else if (loginRes?.role === 3) {
-          router.push("/admin/dashboard");
-        }
-      }
-      if (Object.keys(loginData).length > 0 && !checkLoginRes) {
-        enqueueSnackbar("Incorrect email or password", {
-          variant: "info",
-          anchorOrigin: {
-            vertical: "top",
-            horizontal: "right",
-          },
-          autoHideDuration: 5000,
-        });
-      }
-    }
-  }, [loginStatus, loginRes]);
-
-  useEffect(() => {
-    if (Object.keys(loginData).length > 0) {
-      dispatch(userAuth(loginData));
-    }
-  }, [loginData]);
 
   if (!isClient) {
     return null;

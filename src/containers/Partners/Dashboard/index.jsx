@@ -10,48 +10,59 @@ import {
   closeLoader,
   openLoader,
 } from "@/lib/features/loaderSlice/loaderSlice";
+import { useAuth, useLoader } from "@/hooks";
+import { fetchPartnerDashboardDetails, fetchUserDetails } from "@/api";
 
 const Dashboard = () => {
   const [isClient, setIsClient] = useState(false);
+  const { userData } = useAuth();
+  const { displayLoader, hideLoader } = useLoader();
+  const [userInfo, setUserInfo] = useState({});
+
+  useEffect(() => {
+    const fetchUserInfo = async () => {
+      const payload = {
+        userEmail: userData?.email,
+      };
+      try {
+        displayLoader();
+        const res = await fetchUserDetails(payload);
+        setUserInfo(res?.data?.userDetails);
+      } catch (err) {
+        console.log("err", err);
+      } finally {
+        hideLoader();
+      }
+    };
+
+    fetchUserInfo();
+  }, []);
+
+  const fetchDashInfo = async () => {
+    try {
+      displayLoader();
+      const dashRes = await fetchPartnerDashboardDetails(
+        userInfo?.employer_key
+      );
+      console.log("dashRes", dashRes);
+    } catch (err) {
+      console.log("errrr", err);
+    } finally {
+      hideLoader();
+    }
+  };
+
+  useEffect(() => {
+    if (
+      (userInfo && userInfo?.employer_key !== undefined) ||
+      userInfo?.employer_key !== ""
+    )
+      fetchDashInfo();
+  }, [userInfo]);
+
   useEffect(() => {
     setIsClient(true);
   }, []);
-  const dispatch = useDispatch();
-
-  const userData = useSelector((state) => state.userLoginDetails?.details);
-
-  const getUserInfoRes = useSelector(
-    (state) => state.loggedInUserDetails.details
-  );
-  const dashboardInfoStatus = useSelector(
-    (state) => state.getPartnerDashboardInfoDetails.status
-  );
-  const dashboardInfoRes = useSelector(
-    (state) => state.getPartnerDashboardInfoDetails.details
-  );
-
-  useEffect(() => {
-    if (dashboardInfoStatus === "loading") {
-      dispatch(openLoader());
-    } else {
-      dispatch(closeLoader());
-      if (dashboardInfoStatus === "success") {
-        console.log("success");
-      } else {
-        console.log("failed");
-      }
-    }
-  }, [dashboardInfoStatus]);
-
-  useEffect(() => {
-    if (getUserInfoRes?.userDetails?.accountid !== "") {
-      const payloadTwo = {
-        token: userData.token,
-        userId: getUserInfoRes?.userDetails?.userid,
-      };
-      dispatch(fetchPartnerDashboardInfo(payloadTwo));
-    }
-  }, [userData, getUserInfoRes]);
 
   if (!isClient) {
     return null;
@@ -77,16 +88,6 @@ const Dashboard = () => {
       </Box>
       <Box sx={{ width: "100%", padding: "0 0 2rem 0" }}>
         <Cards
-          totalemployee={
-            dashboardInfoRes?.employerDashboardMetrics?.[0]?.totalemployee
-          }
-          noofactiveemployees={
-            dashboardInfoRes?.employerDashboardMetrics?.[0]?.noofactiveemployees
-          }
-          noofinactiveemployees={
-            dashboardInfoRes?.employerDashboardMetrics?.[0]
-              ?.noofinactiveemployees
-          }
         />
       </Box>
       <Box

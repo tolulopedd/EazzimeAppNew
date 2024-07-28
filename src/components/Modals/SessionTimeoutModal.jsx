@@ -3,7 +3,6 @@ import { Stack, Button, Typography, Box, Grid } from "@mui/material";
 import BaseModal from "./BaseModal";
 import { MdOutlineInfo } from "react-icons/md";
 import { useModal } from "@/hooks";
-import { userLogout } from "@/helpers/LogUserOut";
 
 const SessionTimeoutModal = ({
   actionOnClose,
@@ -50,7 +49,6 @@ const SessionTimeoutModal = ({
         <Box sx={{ padding: "2rem" }}>
           <Button
             onClick={() => {
-              userLogout();
               onClickDone();
             }}
             variant="contained"

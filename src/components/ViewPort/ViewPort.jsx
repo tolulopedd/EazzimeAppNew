@@ -35,16 +35,17 @@ const Viewport = ({ children, swipeable, noContainer, title }) => {
             }}
           >
             {/* <PageHeader title={title} /> */}
-            <Container
+            <Box
               sx={{
                 flexGrow: 1,
                 paddingTop: 4,
                 paddingBottom: 3,
+                width:"100%"
               }}
-              maxWidth="lg"
+              // maxWidth="lg"
             >
               {children}
-            </Container>
+            </Box>
           </Box>
         ) : (
           <Box sx={{ flexGrow: 1 }}>{children}</Box>

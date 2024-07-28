@@ -4,7 +4,6 @@ import axios from "axios";
 export const fetchUserDashboardInfo = createAsyncThunk(
   "getdashdetails/getUserDashboardInfo",
   async (values, { rejectWithValue }) => {
-    console.log("values dasboard info", values)
     try {
       const response = await axios.get(
         `/api/getdashboardinfo/?accountid=${values?.accountId}`,

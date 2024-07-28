@@ -8,18 +8,20 @@ const Cards = () => {
     <Box sx={{ width: "100%" }}>
       <Grid
         container
+        columnSpacing={4}
+        rowSpacing={4}
         sx={{
           display: "flex",
           alignItems: "center",
-          justifyContent: "space-around",
+          // justifyContent: "space-around",
         }}
       >
-        <Grid item xs={12} sm={12} md={6} lg={4}>
+        <Grid item xs={12} sm={6} md={4} lg={4}>
           <Card
             sx={{
               background: "#35CB62",
               padding: "1rem",
-              width: "250px",
+              width: {lg:"250px", md:"250px", sm:"320px", xs:"320px"},
               boxShadow: "2px 6px 14px -3px rgba(0,0,0,0.36)",
               borderRadius: "10px",
             }}
@@ -70,12 +72,12 @@ const Cards = () => {
           </Card>
         </Grid>
 
-        <Grid item xs={12} sm={12} md={6} lg={4}>
+        <Grid item xs={12} sm={6} md={4} lg={4}>
           <Card
             sx={{
               background: "#F2825D",
               padding: "1rem",
-              width: "250px",
+              width: {lg:"250px", md:"250px", sm:"320px", xs:"320px"},
               boxShadow: "2px 6px 14px -3px rgba(0,0,0,0.36)",
               borderRadius: "10px",
             }}
@@ -125,12 +127,12 @@ const Cards = () => {
             </CardContent>
           </Card>
         </Grid>
-        <Grid item xs={12} sm={12} md={3} lg={2}>
+        <Grid item xs={12} sm={6} md={2} lg={2}>
           <Card
             sx={{
               background: "#A3A3A3",
               padding: "1rem 0.3rem 1rem 0.3rem",
-              width: "125px",
+              width: {lg:"125px", md:"125px", sm:"320px", xs:"320px"},
               boxShadow: "2px 6px 14px -3px rgba(0,0,0,0.36)",
               borderRadius: "10px",
             }}
@@ -182,12 +184,12 @@ const Cards = () => {
             </CardContent>
           </Card>
         </Grid>
-        <Grid item xs={12} sm={12} md={3} lg={2}>
+        <Grid item xs={12} sm={6} md={2} lg={2}>
           <Card
             sx={{
               background: "#26AAE0",
               padding: "1rem 0.3rem 1rem 0.3rem",
-              width: "125px",
+              width: {lg:"125px", md:"125px", sm:"320px", xs:"320px"},
               boxShadow: "2px 6px 14px -3px rgba(0,0,0,0.36)",
               borderRadius: "10px",
             }}

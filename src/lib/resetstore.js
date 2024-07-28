@@ -11,6 +11,7 @@ import { resetRequestFundFields } from "./features/userSlices/requestfundSlice";
 import { resetTransactionDetails } from "./features/userSlices/gettransactiondetailsSlice";
 import { resetPasswordFields } from "./features/passwordresetSlice/passwordresetSlice";
 import { resetPartnerDashboardInfoFields } from "./features/dasbhoardSlices.js/getpartnerdashboardinfoSlice";
+import { resetEmployeeList } from "./features/employeeSlices/employeelistSlice";
 
 const clearLocalStorage = () => {
   return sessionStorage.removeItem("persist:root");
@@ -29,6 +30,7 @@ const resetstore = async () => {
   store.dispatch(resetTransactionDetails());
   store.dispatch(resetPasswordFields());
   store.dispatch(resetPartnerDashboardInfoFields());
+  store.dispatch(resetEmployeeList());
 
   await persistor.flush();
   clearLocalStorage();
