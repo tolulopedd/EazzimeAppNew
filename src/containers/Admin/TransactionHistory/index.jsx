@@ -27,7 +27,7 @@ const TransactionHistory = () => {
   useEffect(() => {
     const getFundRequestTransaction = async () => {
       const payload = {
-        requester_user_key: "15",
+        requester_user_key: "0",
       };
       try {
         displayLoader();

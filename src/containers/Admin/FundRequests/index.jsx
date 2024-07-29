@@ -18,29 +18,29 @@ const FundRequests = () => {
   const [details, setDetails] = useState({});
   const [openModal, setOpenModal] = useState(false);
 
-  useEffect(() => {
-    const getFundRequestTransaction = async () => {
-      const payload = {
-        requester_user_key: "15",
-      };
-      try {
-        displayLoader();
-        const requestRes = await fetchListOfFundRequests(payload);
-        const sortedDataDesc = _.orderBy(
-          requestRes?.data?.detailFTAccount,
-          ["transaction_date"],
-          ["desc"]
-        );
-        const pendingTransactions = sortedDataDesc.filter(
-          (item) => item.transaction_status === "Pending"
-        );
-        setTableData(pendingTransactions);
-      } catch (err) {
-        console.log("errr", err?.response?.data?.status);
-      } finally {
-        hideLoader();
-      }
+  const getFundRequestTransaction = async () => {
+    const payload = {
+      requester_user_key: "0",
     };
+    try {
+      displayLoader();
+      const requestRes = await fetchListOfFundRequests(payload);
+      const sortedDataDesc = _.orderBy(
+        requestRes?.data?.detailFTAccount,
+        ["transaction_date"],
+        ["desc"]
+      );
+      const pendingTransactions = sortedDataDesc.filter(
+        (item) => item.transaction_status === "Pending"
+      );
+      setTableData(pendingTransactions);
+    } catch (err) {
+      console.log("errr", err?.response?.data?.status);
+    } finally {
+      hideLoader();
+    }
+  };
+  useEffect(() => {
     getFundRequestTransaction();
   }, []);
 
@@ -143,7 +143,7 @@ const FundRequests = () => {
         <MUIDataTable options={option} columns={columns} data={tableData} />
       </Grid>
 
-      <ApproveFundRequestModal openPop={openModal} setOpenPop={setOpenModal}>
+      <ApproveFundRequestModal openPop={openModal} setOpenPop={setOpenModal} reset={getFundRequestTransaction}>
         <FundRequestDetails details={details} />
       </ApproveFundRequestModal>
     </Box>

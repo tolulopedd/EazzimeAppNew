@@ -2,7 +2,7 @@ import React from "react";
 import { Dialog, DialogContent, Button, Grid, Typography } from "@mui/material";
 import { MdOutlineClose } from "react-icons/md";
 
-const ApproveFundRequestModal = ({ children, openPop, setOpenPop }) => {
+const ApproveFundRequestModal = ({ children, openPop, setOpenPop, reset }) => {
   return (
     <Dialog
       open={openPop}
@@ -50,7 +50,10 @@ const ApproveFundRequestModal = ({ children, openPop, setOpenPop }) => {
             container
             sx={{ width: "20%", display: "flex", justifyContent: "flex-end" }}
           >
-            <Button sx={{ width: "10%" }} onClick={() => setOpenPop(false)}>
+            <Button sx={{ width: "10%" }} onClick={() => {
+              reset();
+              setOpenPop(false)
+              }}>
               <MdOutlineClose size={30} color="#0D2B36" />
             </Button>
           </Grid>

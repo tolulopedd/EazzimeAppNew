@@ -8,10 +8,11 @@ import { employerInfoUpdate, fundRequestApproval } from "@/api";
 import ControlledPhoneInput from "@/components/ControlledComponents/ControlledPhoneInput";
 import dayjs from "dayjs";
 import ControlledAmountField from "@/components/ControlledComponents/ControlledAmountField";
+import { useSnackbar } from "notistack";
 
 const FundRequestDetails = ({ details }) => {
-//   console.log("details", details);
   const { displayLoader, hideLoader } = useLoader();
+  const {enqueueSnackbar} = useSnackbar();
 
   const validationSchema = yup.object({
     account_key: yup.string().required("This field is required"),
@@ -22,7 +23,14 @@ const FundRequestDetails = ({ details }) => {
     try {
       displayLoader();
       const approveFundRes = await fundRequestApproval(values);
-      console.log("approveFundRes", approveFundRes);
+      enqueueSnackbar(approveFundRes?.data?.status, {
+        variant: "success",
+        anchorOrigin: {
+          vertical: "top",
+          horizontal: "right",
+        },
+        autoHideDuration: 5000,
+      });
     } catch (err) {
       console.log("errr", err);
     } finally {
@@ -40,7 +48,7 @@ const FundRequestDetails = ({ details }) => {
   });
 
   useEffect(() => {
-    // setFieldValue("account_key", details?.account_key);
+    setFieldValue("account_key", details?.account_key);
     setFieldValue("requestFundAmount", details?.transaction_amount);
   }, []);
   return (
