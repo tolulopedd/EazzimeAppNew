@@ -152,7 +152,6 @@ const TransactionHistory = () => {
     };
   });
 
-
   return (
     <Box sx={{ width: "100%", padding: "1rem 2rem 0 2rem" }}>
       <Grid container spacing={2}>

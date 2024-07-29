@@ -15,8 +15,8 @@ const FundRequestDetails = ({ details }) => {
   const {enqueueSnackbar} = useSnackbar();
 
   const validationSchema = yup.object({
-    account_key: yup.string().required("This field is required"),
-    requestFundAmount: yup.string().required("This field is required"),
+    transid: yup.string().required("This field is required"),
+    transaction_amount: yup.string().required("This field is required"),
   });
 
   const onSubmit = async (values) => {
@@ -40,16 +40,16 @@ const FundRequestDetails = ({ details }) => {
 
   const { setFieldValue, ...formik } = useFormik({
     initialValues: {
-      account_key: "",
-      requestFundAmount: "",
+      transid: "",
+      transaction_amount: "",
     },
     validationSchema,
     onSubmit,
   });
 
   useEffect(() => {
-    setFieldValue("account_key", details?.account_key);
-    setFieldValue("requestFundAmount", details?.transaction_amount);
+    setFieldValue("transid", details?.transid);
+    setFieldValue("transaction_amount", details?.transaction_amount);
   }, []);
   return (
     <Box sx={{ width: "100%" }}>
@@ -60,15 +60,15 @@ const FundRequestDetails = ({ details }) => {
       >
         <Grid item xs={12} sm={12} md={6} lg={3}>
           <ControlledTextField
-            name="account_key"
-            label="Account Number"
+            name="transid"
+            label="Transaction ID"
             formik={formik}
             disabled
           />
         </Grid>
         <Grid item xs={12} sm={12} md={6} lg={3}>
           <ControlledAmountField
-            name="requestFundAmount"
+            name="transaction_amount"
             label="Amount"
             formik={formik}
             disabled
