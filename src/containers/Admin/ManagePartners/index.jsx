@@ -37,20 +37,21 @@ const ManagePartners = () => {
     fetchUserInfo();
   }, []);
 
+  const fetchPartnersList = async () => {
+    try {
+      const userId = "0";
+      displayLoader();
+      const partnersRes = await fetchEmployerListForAdmin(userId);
+      setPartners(partnersRes?.data?.employerDetails);
+    } catch (err) {
+      console.log("err", err);
+    } finally {
+      hideLoader();
+    }
+  };
+
   useEffect(() => {
     if (Object.keys(userInfo)?.length > 0) {
-      const fetchPartnersList = async () => {
-        try {
-          const userId = "15";
-          displayLoader();
-          const partnersRes = await fetchEmployerListForAdmin(userId);
-          setPartners(partnersRes?.data?.employerDetails);
-        } catch (err) {
-          console.log("err", err);
-        } finally {
-          hideLoader();
-        }
-      };
       fetchPartnersList();
     }
   }, [userInfo]);
@@ -157,8 +158,9 @@ const ManagePartners = () => {
       <UpdatePartnerModal
         openPop={openModal}
         setOpenPop={setOpenModal}
+        refreshTable={fetchPartnersList}
       >
-        <UpdatePartner details={details}/>
+        <UpdatePartner details={details} />
       </UpdatePartnerModal>
     </Box>
   );

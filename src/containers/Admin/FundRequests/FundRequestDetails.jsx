@@ -10,11 +10,11 @@ import dayjs from "dayjs";
 import ControlledAmountField from "@/components/ControlledComponents/ControlledAmountField";
 
 const FundRequestDetails = ({ details }) => {
-  console.log("details", details);
+//   console.log("details", details);
   const { displayLoader, hideLoader } = useLoader();
 
   const validationSchema = yup.object({
-    account_key: yup.string().email().required("This field is required"),
+    account_key: yup.string().required("This field is required"),
     requestFundAmount: yup.string().required("This field is required"),
   });
 
@@ -40,7 +40,7 @@ const FundRequestDetails = ({ details }) => {
   });
 
   useEffect(() => {
-    setFieldValue("account_key", details?.account_key);
+    // setFieldValue("account_key", details?.account_key);
     setFieldValue("requestFundAmount", details?.transaction_amount);
   }, []);
   return (
@@ -53,7 +53,7 @@ const FundRequestDetails = ({ details }) => {
         <Grid item xs={12} sm={12} md={6} lg={3}>
           <ControlledTextField
             name="account_key"
-            label="Account Key"
+            label="Account Number"
             formik={formik}
             disabled
           />

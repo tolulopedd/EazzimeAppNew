@@ -2,7 +2,12 @@ import React from "react";
 import { Dialog, DialogContent, Button, Grid, Typography } from "@mui/material";
 import { MdOutlineClose } from "react-icons/md";
 
-const UpdatePartnerModal = ({ children, openPop, setOpenPop }) => {
+const UpdatePartnerModal = ({
+  children,
+  openPop,
+  setOpenPop,
+  refreshTable,
+}) => {
   return (
     <Dialog
       open={openPop}
@@ -46,8 +51,14 @@ const UpdatePartnerModal = ({ children, openPop, setOpenPop }) => {
             container
             sx={{ width: "50%", display: "flex", justifyContent: "flex-end" }}
           >
-            <Button sx={{ width: "10%" }} onClick={() => setOpenPop(false)}>
-              <MdOutlineClose size={30} color="#0D2B36"/>
+            <Button
+              sx={{ width: "10%" }}
+              onClick={() => {
+                refreshTable();
+                setOpenPop(false);
+              }}
+            >
+              <MdOutlineClose size={30} color="#0D2B36" />
             </Button>
           </Grid>
         </Grid>
