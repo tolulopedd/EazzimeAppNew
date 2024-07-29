@@ -3,7 +3,12 @@ import { Card, Box, Grid, CardContent, Typography } from "@mui/material";
 import { FaUser, FaUserMinus, FaHandshake, FaUserCheck } from "react-icons/fa";
 import { FaUserTie } from "react-icons/fa6";
 
-const Cards = () => {
+const Cards = ({
+  activePartners,
+  employees,
+  pendingFundReq,
+  approvedFundReq,
+}) => {
   return (
     <Box sx={{ width: "100%" }}>
       <Grid
@@ -21,7 +26,7 @@ const Cards = () => {
             sx={{
               background: "#35CB62",
               padding: "1rem",
-              width: {lg:"250px", md:"250px", sm:"320px", xs:"320px"},
+              width: { lg: "250px", md: "250px", sm: "320px", xs: "320px" },
               boxShadow: "2px 6px 14px -3px rgba(0,0,0,0.36)",
               borderRadius: "10px",
             }}
@@ -60,7 +65,7 @@ const Cards = () => {
                         fontSize: "1.5em",
                       }}
                     >
-                      160
+                      {activePartners}
                     </Typography>
                   </Grid>
                   <Grid sx={{ display: "flex", justifyContent: "flex-end" }}>
@@ -77,7 +82,7 @@ const Cards = () => {
             sx={{
               background: "#F2825D",
               padding: "1rem",
-              width: {lg:"250px", md:"250px", sm:"320px", xs:"320px"},
+              width: { lg: "250px", md: "250px", sm: "320px", xs: "320px" },
               boxShadow: "2px 6px 14px -3px rgba(0,0,0,0.36)",
               borderRadius: "10px",
             }}
@@ -116,7 +121,7 @@ const Cards = () => {
                         fontSize: "1.5em",
                       }}
                     >
-                      450
+                      {employees}
                     </Typography>
                   </Grid>
                   <Grid sx={{ display: "flex", justifyContent: "flex-end" }}>
@@ -132,7 +137,7 @@ const Cards = () => {
             sx={{
               background: "#A3A3A3",
               padding: "1rem 0.3rem 1rem 0.3rem",
-              width: {lg:"125px", md:"125px", sm:"320px", xs:"320px"},
+              width: { lg: "125px", md: "125px", sm: "320px", xs: "320px" },
               boxShadow: "2px 6px 14px -3px rgba(0,0,0,0.36)",
               borderRadius: "10px",
             }}
@@ -173,7 +178,7 @@ const Cards = () => {
                         fontSize: "1.2em",
                       }}
                     >
-                      310
+                      {pendingFundReq}
                     </Typography>
                   </Grid>
                   <Grid sx={{ display: "flex", justifyContent: "flex-end" }}>
@@ -189,7 +194,7 @@ const Cards = () => {
             sx={{
               background: "#26AAE0",
               padding: "1rem 0.3rem 1rem 0.3rem",
-              width: {lg:"125px", md:"125px", sm:"320px", xs:"320px"},
+              width: { lg: "125px", md: "125px", sm: "320px", xs: "320px" },
               boxShadow: "2px 6px 14px -3px rgba(0,0,0,0.36)",
               borderRadius: "10px",
             }}
@@ -230,7 +235,7 @@ const Cards = () => {
                         fontSize: "1.2em",
                       }}
                     >
-                      320
+                      {approvedFundReq}
                     </Typography>
                   </Grid>
                   <Grid sx={{ display: "flex", justifyContent: "flex-end" }}>

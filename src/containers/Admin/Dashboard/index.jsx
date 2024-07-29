@@ -12,6 +12,7 @@ const AdminDashboard = () => {
   const { userData } = useAuth();
   const { displayLoader, hideLoader } = useLoader();
   const [userInfo, setUserInfo] = useState({});
+  const [dashInfo, setDashInfo] = useState({});
 
   useEffect(() => {
     const fetchUserInfo = async () => {
@@ -32,14 +33,14 @@ const AdminDashboard = () => {
     fetchUserInfo();
   }, []);
 
-  const fetchDashInfo = async () => {
+  const fetchDashInfo = async (key) => {
     const payload = {
-      employerid: "15",
+      employerid: `${key}`,
     };
     try {
       displayLoader();
       const dashRes = await fetchAdminDashboard(payload);
-      console.log("dashRes", dashRes);
+      setDashInfo(dashRes.data.eazziMeDash?.[0]);
     } catch (err) {
       console.log("errrr", err);
     } finally {
@@ -52,7 +53,7 @@ const AdminDashboard = () => {
       (userInfo && userInfo?.employer_key !== undefined) ||
       userInfo?.employer_key !== ""
     )
-      fetchDashInfo();
+      fetchDashInfo(0);
   }, [userInfo]);
 
   useEffect(() => {
@@ -62,6 +63,7 @@ const AdminDashboard = () => {
   if (!isClient) {
     return null;
   }
+
   return (
     <Box sx={{ width: "100%" }}>
       <Box
@@ -88,7 +90,12 @@ const AdminDashboard = () => {
         }}
       >
         <Grid container sx={{ width: "100%", padding: "0 0 2rem 0" }}>
-          <Cards />
+          <Cards
+            activePartners={dashInfo?.activepartners}
+            employees={dashInfo?.employeescount}
+            pendingFundReq={dashInfo?.pendingfundrequest}
+            approvedFundReq={dashInfo?.approvedfundrequest}
+          />
         </Grid>
         <Grid
           container
