@@ -17,28 +17,14 @@ import Image from "next/image";
 import dayjs from "dayjs";
 import { FaUser } from "react-icons/fa6";
 import resetstore from "@/lib/resetstore";
-import {
-  openLoader,
-  closeLoader,
-} from "@/lib/features/loaderSlice/loaderSlice";
-import { useSelector, useDispatch } from "react-redux";
-import { fetchUserDetails } from "@/lib/features/userSlices/getuserdetailsSlice";
+
+import { useAuth, useLoader } from "@/hooks";
 
 const Navbar = ({ swipeable }) => {
+  const router = useRouter();
+  const { userDetails, signOut } = useAuth();
   const { toggleSidebar } = useNavToggle();
   const [nowDate, setNowDate] = useState("");
-
-  const dispatch = useDispatch();
-  const getUserInfoStatus = useSelector(
-    (state) => state.loggedInUserDetails?.status
-  );
-  const getUserInfoRes = useSelector(
-    (state) => state.loggedInUserDetails.details
-  );
-
-  const userData = useSelector((state) => state.userLoginDetails?.details);
-
-  const router = useRouter();
 
   useEffect(() => {
     const todayDate = dayjs().format("dddd, MMMM, DD, YYYY hh:mm A");
@@ -50,33 +36,10 @@ const Navbar = ({ swipeable }) => {
     router.push("/");
   };
 
-  useEffect(() => {
-    if (getUserInfoStatus === "loading") {
-      dispatch(openLoader());
-    } else if (getUserInfoStatus !== "loading") {
-      dispatch(closeLoader());
-      if (getUserInfoStatus === "success") {
-        console.log("details fetched successfully");
-      } else {
-        console.log("details not fetched");
-      }
-    }
-  }, [getUserInfoStatus, getUserInfoRes]);
-
-  useEffect(() => {
-    if (userData?.token) {
-      const payloadData = {
-        userEmail: userData?.email,
-        token: userData?.token,
-      };
-      dispatch(fetchUserDetails(payloadData));
-    }
-  }, [userData?.token]);
-
   const loggedInUserName =
-    `${getUserInfoRes?.userDetails?.firstname}` +
+    `${userDetails?.firstname}` +
     " " +
-    `${getUserInfoRes?.userDetails?.lastname}`;
+    `${userDetails?.lastname}`;
 
   return (
     <>
@@ -144,7 +107,7 @@ const Navbar = ({ swipeable }) => {
                 sx={{
                   display: { lg: "flex", md: "flex", sm: "none", xs: "none" },
                   padding: "0 0 0 2rem",
-                  marginLeft:"4rem"
+                  marginLeft: "4rem",
                 }}
               >
                 <Typography variant="body1">{nowDate}</Typography>
@@ -161,8 +124,8 @@ const Navbar = ({ swipeable }) => {
                   justifyContent: "flex-end",
                 }}
               >
-                {getUserInfoRes?.userDetails?.firstname !== undefined &&
-                  getUserInfoRes?.userDetails?.lastname !== undefined && (
+                {userDetails?.firstname !== undefined &&
+                  userDetails?.lastname !== undefined && (
                     <Grid
                       sx={{
                         display: {
@@ -190,7 +153,7 @@ const Navbar = ({ swipeable }) => {
                 >
                   <Button
                     variant="contained"
-                    onClick={logOutUser}
+                    onClick={signOut}
                     sx={{
                       textTransform: "uppercase",
                       backgroundColor: "#0D2B36",

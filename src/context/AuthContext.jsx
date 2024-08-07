@@ -10,6 +10,7 @@ import ShowLoader from "@/components/Loader/ShowLoader";
 import SessionTimeoutModal from "@/components/Modals/SessionTimeoutModal";
 import secureLocalStorage from "react-secure-storage";
 import { useLoader, useDisclosure } from "@/hooks";
+import { fetchUserDetails } from "@/api";
 const TOKEN_VALIDITY_PERIOD = 76000;
 const UNAUTH_ROUTES = ["/", "/login", "/signup", "/forgot-password"];
 
@@ -19,6 +20,7 @@ const AuthContextProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
   const [isSignedIn, setIsSignedIn] = useState(null);
   const [userData, setUserData] = useState(null);
+  const [userDetails, setUserDetails] = useState({});
   const { displayLoader, hideLoader } = useLoader();
   const [enumTypes, setEnumTypes] = useState([]);
   const [counter, setCounter] = useState(0);
@@ -34,24 +36,28 @@ const AuthContextProvider = ({ children }) => {
 
   const signIn = useCallback(
     async (authData) => {
-      console.log("authData", authData);
+      const payload ={
+        userEmail:authData?.data?.email
+      }
       displayLoader();
       const auth = {
         ...authData,
-        token: authData.token,
+        token: authData?.data?.token,
         expires: dayjs().add(TOKEN_VALIDITY_PERIOD, "s").toISOString(),
       };
+      const res = await fetchUserDetails(payload);
+      setUserDetails(res?.data?.userDetails)
       sessionStorage.setItem("auth", btoa(JSON.stringify(auth)));
-      authorizeServiceApi(auth?.token);
+      authorizeServiceApi(authData?.data?.token);
       setUserData(auth);
       setIsSignedIn(true);
       secureLocalStorage.setItem("lunas", auth);
-      if(authData?.role === 1){
+      if(authData?.data?.role === 1){
         router.push("/employee/dashboard", undefined, { replace: true });
 
-      }else if(authData?.role === 2){
+      }else if(authData?.data?.role === 2){
         router.push("/partner/dashboard", undefined, { replace: true });
-      }else if(authData?.role === 3){
+      }else if(authData?.data?.role === 3){
         router.push("/admin/dashboard", undefined, { replace: true });
       }
       setLoading(false);
@@ -60,10 +66,14 @@ const AuthContextProvider = ({ children }) => {
     [displayLoader, hideLoader, router]
   );
 
+
+
   const signOut = useCallback(() => {
     sessionStorage.removeItem("auth");
+    secureLocalStorage.removeItem("lunas");
     unauthorizeServiceApi();
     setUserData(null);
+    setUserDetails(null);
     setIsSignedIn(false);
     setLoading(false);
     setCounter(0);
@@ -148,8 +158,8 @@ const AuthContextProvider = ({ children }) => {
   // }, [counter]);
 
   const authValues = useMemo(() => {
-    return { isSignedIn, loading, signIn, signOut, enumTypes, userData };
-  }, [isSignedIn, loading, signIn, signOut, enumTypes, userData]);
+    return { isSignedIn, loading, signIn, signOut, enumTypes, userData, userDetails };
+  }, [isSignedIn, loading, signIn, signOut, enumTypes, userData, userDetails]);
 
   return (
     <>

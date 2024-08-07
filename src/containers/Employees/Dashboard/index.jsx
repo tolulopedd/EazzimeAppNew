@@ -11,83 +11,56 @@ import {
   closeLoader,
 } from "@/lib/features/loaderSlice/loaderSlice";
 import { updateDashboardData } from "@/lib/features/dasbhoardSlices.js/updatedashboardSlice";
+import { useAuth, useLoader } from "@/hooks";
+import { dashboardUpdateDetails, fetchDashboardDetails } from "@/api";
 
 const Dashboard = () => {
+  const { userData, userDetails } = useAuth();
+  const { displayLoader, hideLoader } = useLoader();
   const [isClient, setIsClient] = useState(false);
+  const [dashData, setDashData] = useState({});
+
   useEffect(() => {
     setIsClient(true);
   }, []);
-  const dispatch = useDispatch();
 
-  const userData = useSelector((state) => state.userLoginDetails?.details);
-
-  const updateDashboardStatus = useSelector(
-    (state) => state.dashUpdateDetails.status
-  );
-  const updateDashboardRes = useSelector(
-    (state) => state.dashUpdateDetails.details
-  );
-  const getUserInfoRes = useSelector(
-    (state) => state.loggedInUserDetails.details
-  );
-  const dashboardInfoStatus = useSelector(
-    (state) => state.getUserDashboardInfo.status
-  );
-  const dashboardInfoRes = useSelector(
-    (state) => state.getUserDashboardInfo.details
-  );
+  const dashboardUpdate = async () => {
+    const payload = {
+      accountid: userDetails?.accountid
+    }
+    try {
+      displayLoader();
+      const dashUpdateRes = await dashboardUpdateDetails(payload);
+      console.log("dashUpdateRes", dashUpdateRes?.data)
+    } catch (err) {
+      console.log(err);
+    } finally {
+      hideLoader();
+    }
+  };
 
   useEffect(() => {
-    if (updateDashboardStatus === "loading") {
-      dispatch(openLoader());
-    } else {
-      dispatch(closeLoader());
-      if (updateDashboardStatus === "success") {
-        console.log("success");
-      } else {
-        console.log("failed");
+    const getDashboardData = async () => {
+      try {
+        displayLoader();
+        const dashRes = await fetchDashboardDetails(userDetails?.accountid);
+        setDashData(dashRes?.data.detailAccount?.[0])
+      } catch (err) {
+        console.log(err);
+      } finally {
+        hideLoader();
       }
-    }
-  }, [updateDashboardStatus]);
+    };
+    dashboardUpdate();
+    getDashboardData();
+  }, [userDetails]);
 
-  useEffect(() => {
-    if (dashboardInfoStatus === "loading") {
-      dispatch(openLoader());
-    } else {
-      dispatch(closeLoader());
-      if (dashboardInfoStatus === "success") {
-        console.log("success");
-      } else {
-        console.log("failed");
-      }
-    }
-  }, [dashboardInfoStatus]);
-
-  useEffect(() => {
-    if (getUserInfoRes?.userDetails?.accountid !== "") {
-      const payloadOne = {
-        token: userData?.token,
-        accountid: getUserInfoRes?.userDetails?.accountid,
-      };
-      dispatch(updateDashboardData(payloadOne));
-      // dispatch(fetchUserDashboardInfo(payloadOne));
-    }
-  }, [userData, getUserInfoRes]);
-
-  useEffect(() => {
-    if (getUserInfoRes?.userDetails?.accountid !== "") {
-      const payloadTwo = {
-        token: userData.token,
-        accountId: getUserInfoRes?.userDetails?.accountid,
-      };
-      dispatch(fetchUserDashboardInfo(payloadTwo));
-    }
-  }, [userData, getUserInfoRes]);
 
 
   if (!isClient) {
     return null;
   }
+
 
   return (
     <Box sx={{ width: "100%" }}>
@@ -116,9 +89,9 @@ const Dashboard = () => {
       </Box>
       <Box sx={{ width: "100%", padding: "0 0 2rem 0" }}>
         <Cards
-          availableBal={dashboardInfoRes?.detailAccount[0]?.available_balance}
-          utitilizedBal={dashboardInfoRes?.detailAccount[0]?.utilized_balance}
-          repayableBal={dashboardInfoRes?.detailAccount[0]?.repaid_balance}
+          availableBal={dashData?.available_balance}
+          utitilizedBal={dashData?.utilized_balance}
+          repayableBal={dashData?.repaid_balance}
         />
       </Box>
       <Box

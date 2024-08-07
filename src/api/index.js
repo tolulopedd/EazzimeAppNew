@@ -23,17 +23,20 @@ export const EmployerCreation = async (body) =>
 export const dashboardUpdateDetails = async (body) =>
   ServiceApi.put(routes.updateDashboardInfo, body);
 
-export const fetchDashboardDetails = async () =>
-  ServiceApi.get(routes.getDashboardInfo);
+export const fetchEmployeeBankDetails = async (body) =>
+  ServiceApi.post(routes.getEmployeeBankDetails, body);
+
+export const fetchDashboardDetails = async (userId) =>
+  ServiceApi.get(`${routes.getDashboardInfo}/${userId}`);
 
 export const fetchPartnerDashboardDetails = async (userId) =>
   ServiceApi.get(`${routes.getPartnerDashboardInfo}/${userId}`);
 
-export const RequestEmployeeFund = async (body) =>
+export const requestEmployeeFunding = async (body) =>
   ServiceApi.post(routes.employeeRequestFund, body);
 
-export const fetchTransactionDetails = async () =>
-  ServiceApi.get(routes.getTransactionDetails);
+export const fetchTransactionDetails = async (accountId) =>
+  ServiceApi.get(`${routes.getTransactionDetails}/${accountId}`);
 
 export const fetchListOfEmployees = async () =>
   ServiceApi.get(routes.getListOfEmployees);

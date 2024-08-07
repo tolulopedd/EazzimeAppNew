@@ -6,87 +6,71 @@ import ControlledAmountField from "@/components/ControlledComponents/ControlledA
 import MUIDataTable from "mui-datatables";
 import { useFormik } from "formik";
 import * as yup from "yup";
-import transactionData from "@/helpers/sampleTransactionList.json";
 import { FaRegEye } from "react-icons/fa";
-import { fetchBankDetails } from "@/lib/features/userSlices/employeebankdetailsSlice";
-import {
-  openLoader,
-  closeLoader,
-} from "@/lib/features/loaderSlice/loaderSlice";
-import { useDispatch, useSelector } from "react-redux";
 import { formatAmount } from "@/helpers/utils";
-import {
-  fundRequest,
-  resetRequestFundFields,
-} from "@/lib/features/userSlices/requestfundSlice";
 import { enqueueSnackbar } from "notistack";
-import { fetchTransactions } from "@/lib/features/userSlices/gettransactiondetailsSlice";
 import dayjs from "dayjs";
+import { useAuth, useLoader } from "@/hooks";
+import {
+  fetchDashboardDetails,
+  fetchEmployeeBankDetails,
+  fetchTransactionDetails,
+  requestEmployeeFunding,
+} from "@/api";
 
 const FundRequest = () => {
-  const dispatch = useDispatch();
-  const [data, setData] = useState({});
+  const { userDetails } = useAuth();
+  const { displayLoader, hideLoader } = useLoader();
   const [isClient, setIsClient] = useState(false);
-  const userData = useSelector((state) => state.userLoginDetails?.details);
-  const transactionDetailsStatus = useSelector(
-    (state) => state.getTransactionDetails.status
-  );
-  const transactionDetailsRes = useSelector(
-    (state) => state.getTransactionDetails.details
-  );
-  const requestFundStatus = useSelector(
-    (state) => state.requestFundDetails.status
-  );
-  const requestFundRes = useSelector(
-    (state) => state.requestFundDetails.details
-  );
-  const getUserInfoRes = useSelector(
-    (state) => state.loggedInUserDetails.details
-  );
+  const [dashData, setDashData] = useState({});
+  const [bankInfo, setBankInfo] = useState({});
+  const [transac, setTransac] = useState([]);
 
-  const dashboardInfoRes = useSelector(
-    (state) => state.getUserDashboardInfo.details
-  );
-  const employeeBankDetailsStatus = useSelector(
-    (state) => state.getEmployeeBankDetails.status
-  );
-  const employeeBankDetailsRes = useSelector(
-    (state) => state.getEmployeeBankDetails.details
-  );
 
-  useEffect(() => {
-    if (transactionDetailsStatus === "loading") {
-      dispatch(openLoader());
-    } else {
-      dispatch(closeLoader());
-      if (transactionDetailsStatus === "success") {
-        console.log("success");
-      } else if (transactionDetailsStatus !== "success") {
-        console.log("failed");
-      }
-    }
-  }, [transactionDetailsStatus]);
-
-  useEffect(() => {
-    if (employeeBankDetailsStatus === "loading") {
-      dispatch(openLoader());
-    } else {
-      dispatch(closeLoader());
-      if (employeeBankDetailsStatus === "success") {
-        console.log("success");
-      } else if (employeeBankDetailsStatus !== "success") {
-        console.log("failed");
-      }
-    }
-  }, [employeeBankDetailsStatus]);
-
-  useEffect(() => {
+  const getBankDetails = async () => {
     const payload = {
-      token: userData?.token,
-      account_key: getUserInfoRes?.userDetails?.accountid,
+      account_key: userDetails?.accountid,
     };
-    dispatch(fetchBankDetails(payload));
-  }, []);
+    try {
+      displayLoader();
+      const bankRes = await fetchEmployeeBankDetails(payload);
+      setBankInfo(bankRes?.data?.detailAccount?.[0]);
+    } catch (err) {
+      console.log(err);
+    } finally {
+      hideLoader();
+    }
+  };
+
+  const getTransactions = async () => {
+    try {
+      displayLoader();
+      const transRes = await fetchTransactionDetails(userDetails?.accountid);
+      setTransac(transRes?.data?.detailAccount);
+    } catch (err) {
+      console.log(err);
+    } finally {
+      hideLoader();
+    }
+  };
+
+  useEffect(() => {
+    const getDashboardData = async () => {
+      try {
+        displayLoader();
+        const dashRes = await fetchDashboardDetails(userDetails?.accountid);
+        setDashData(dashRes?.data.detailAccount?.[0]);
+      } catch (err) {
+        console.log(err);
+      } finally {
+        hideLoader();
+      }
+    };
+
+    getDashboardData();
+    getBankDetails();
+    getTransactions();
+  }, [userDetails]);
 
   useEffect(() => {
     setIsClient(true);
@@ -97,8 +81,28 @@ const FundRequest = () => {
   });
 
   const onSubmit = async (values) => {
-    console.log("values", values);
-    setData(values);
+    const payload = {
+      account_key: userDetails?.accountid,
+      requestFundAmount: values?.amount,
+    };
+    try {
+      displayLoader();
+      const requestRes = await requestEmployeeFunding(payload);
+      enqueueSnackbar(requestRes?.data?.status, {
+        variant: "success",
+        anchorOrigin: {
+          vertical: "top",
+          horizontal: "right",
+        },
+        autoHideDuration: 5000,
+      });
+      setFieldValue("amount", "0.00");
+      getTransactions();
+    } catch (err) {
+      console.log(err);
+    } finally {
+      hideLoader();
+    }
   };
 
   const { setFieldValue, ...formik } = useFormik({
@@ -110,16 +114,6 @@ const FundRequest = () => {
     validationSchema,
     onSubmit,
   });
-
-  useEffect(() => {
-    if (getUserInfoRes?.userDetails?.accountid !== "") {
-      const payloadTrans = {
-        token: userData.token,
-        accountId: getUserInfoRes?.userDetails?.accountid,
-      };
-      dispatch(fetchTransactions(payloadTrans));
-    }
-  }, [userData, getUserInfoRes]);
 
   const columns = [
     {
@@ -217,73 +211,22 @@ const FundRequest = () => {
     // },
   ];
 
-  const checkRequestFundRes = /successfully/.test(requestFundRes?.status);
-
   useEffect(() => {
-    const payloadTrans = {
-      token: userData.token,
-      accountId: getUserInfoRes?.userDetails?.accountid,
-    };
-    if (requestFundStatus === "loading") {
-      dispatch(openLoader());
-    } else {
-      dispatch(closeLoader());
-      if (checkRequestFundRes) {
-        enqueueSnackbar(requestFundRes?.status, {
-          variant: "success",
-          anchorOrigin: {
-            vertical: "top",
-            horizontal: "right",
-          },
-          autoHideDuration: 5000,
-        });
-        setFieldValue("amount", "0.00");
-        dispatch(resetRequestFundFields());
-        dispatch(fetchTransactions(payloadTrans));
-      }
-      if (formik.values.amount !== "0.00" && !checkRequestFundRes) {
-        enqueueSnackbar("Fund Request is not successful!", {
-          variant: "info",
-          anchorOrigin: {
-            vertical: "top",
-            horizontal: "right",
-          },
-          autoHideDuration: 5000,
-        });
-      }
-    }
-  }, [requestFundStatus, checkRequestFundRes]);
+    setFieldValue("bank", bankInfo?.bank);
+    setFieldValue("bank_account", bankInfo?.bank_account);
+  }, [userDetails, bankInfo]);
 
-  useEffect(() => {
-    if (data?.amount) {
-      const payloadData = {
-        account_key: getUserInfoRes?.userDetails?.accountid,
-        requestFundAmount: `${data?.amount}`,
-        token: userData?.token,
-      };
-      dispatch(fundRequest(payloadData));
-    }
-  }, [data]);
-
-  useEffect(() => {
-    setFieldValue("bank", employeeBankDetailsRes?.detailAccount[0].bank);
-    setFieldValue(
-      "bank_account",
-      employeeBankDetailsRes?.detailAccount[0].bank_account
-    );
-  }, [employeeBankDetailsRes]);
-
-  const amountAvailable = dashboardInfoRes?.detailAccount[0]?.available_balance;
+  const amountAvailable = dashData?.available_balance;
 
   const option = {
     rowsPerPageOptions: [5, 10, 20],
     selectableRows: "none",
   };
 
+
   if (!isClient) {
     return null;
   }
-
 
   return (
     <Box sx={{ width: "100%", padding: "1rem 2rem 0 2rem" }}>
@@ -306,7 +249,7 @@ const FundRequest = () => {
             sx={{ display: "flex", justifyContent: "flex-start" }}
           >
             <Typography sx={{ fontWeight: "500", fontSize: "1em" }}>
-              {`How much do you need today ${getUserInfoRes?.userDetails?.firstname}?`}
+              {`How much do you need today ${userDetails?.firstname}?`}
             </Typography>
           </Grid>
           <Grid item xs={12} sm={12} md={3} lg={3}>
@@ -407,7 +350,8 @@ const FundRequest = () => {
           <MUIDataTable
             options={option}
             columns={columns}
-            data={transactionDetailsRes?.detailAccount}
+            data={transac ? transac : []}
+            // data={transactionDetailsRes?.detailAccount}
           />
         </Grid>
       </Box>
