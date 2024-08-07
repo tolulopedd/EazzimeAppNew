@@ -5,61 +5,43 @@ import ControlledTextField from "@/components/ControlledComponents/ControlledTex
 import { useFormik } from "formik";
 import MUIDataTable from "mui-datatables";
 import { FaRegEye } from "react-icons/fa";
-import transactionData from "@/helpers/sampleTransactionList.json";
 import ControlledSelect from "@/components/ControlledComponents/ControlledSelect";
-import { fetchTransactions } from "@/lib/features/userSlices/gettransactiondetailsSlice";
 import dayjs from "dayjs";
-import { useDispatch, useSelector } from "react-redux";
+
 import { formatAmount } from "@/helpers/utils";
-import {
-  closeLoader,
-  openLoader,
-} from "@/lib/features/loaderSlice/loaderSlice";
+
+import { useAuth, useLoader } from "@/hooks";
+import { fetchTransactionDetails } from "@/api";
 
 const TransactionHistory = () => {
-  const dispatch = useDispatch();
+  const { userDetails } = useAuth();
+  const { displayLoader, hideLoader } = useLoader();
+  const [transac, setTransac] = useState([]);
   const [isClient, setIsClient] = useState(false);
 
   useEffect(() => {
     setIsClient(true);
   }, []);
-  const userData = useSelector((state) => state.userLoginDetails?.details);
-  const getUserInfoRes = useSelector(
-    (state) => state.loggedInUserDetails.details
-  );
-  const transactionDetailsStatus = useSelector(
-    (state) => state.getTransactionDetails.status
-  );
-  const transactionDetailsRes = useSelector(
-    (state) => state.getTransactionDetails.details
-  );
 
-  useEffect(() => {
-    if (transactionDetailsStatus === "loading") {
-      dispatch(openLoader());
-    } else {
-      dispatch(closeLoader());
-      if (transactionDetailsStatus === "success") {
-        console.log("success");
-      } else if (transactionDetailsStatus !== "success") {
-        console.log("failed");
-      }
-    }
-  }, [transactionDetailsStatus]);
-
-  useEffect(() => {
-    if (getUserInfoRes?.userDetails?.accountid !== "") {
-      const payloadTrans = {
-        token: userData.token,
-        accountId: getUserInfoRes?.userDetails?.accountid,
-      };
-      dispatch(fetchTransactions(payloadTrans));
-    }
-  }, [userData, getUserInfoRes]);
   const onSubmit = async (values) => {
     try {
     } catch (err) {}
   };
+
+  useEffect(() => {
+    const getTransactions = async () => {
+      try {
+        displayLoader();
+        const transRes = await fetchTransactionDetails(userDetails?.accountid);
+        setTransac(transRes?.data?.detailAccount);
+      } catch (err) {
+        console.log(err);
+      } finally {
+        hideLoader();
+      }
+    };
+    getTransactions();
+  }, [userDetails]);
 
   const { setFieldValue, ...formik } = useFormik({
     initialValues: {
@@ -247,7 +229,7 @@ const TransactionHistory = () => {
         <MUIDataTable
           options={option}
           columns={columns}
-          data={transactionDetailsRes?.detailAccount}
+          data={transac ? transac : []}
         />
       </Grid>
     </Box>

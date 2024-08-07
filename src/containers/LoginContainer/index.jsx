@@ -61,7 +61,6 @@ const LoginContainer = () => {
     try{
       displayLoader();
       const authRes = await authLogin(values);
-      console.log("authRes", authRes);
       enqueueSnackbar(authRes?.data?.status, {
         variant: "success",
         anchorOrigin: {
@@ -71,7 +70,7 @@ const LoginContainer = () => {
         autoHideDuration: 5000,
       });
       formik.handleReset();
-      signIn(authRes?.data)
+      signIn(authRes)
     }catch(err){
       console.log("errr", err)
     }finally{

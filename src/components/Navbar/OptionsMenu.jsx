@@ -4,8 +4,10 @@ import { Button, ListItemIcon, Menu, MenuItem } from "@mui/material";
 
 import LogoutIcon from "@mui/icons-material/Logout";
 import { useRouter } from "next/navigation";
+import { useAuth } from "@/hooks";
 
 const OptionsMenu = ({ anchorEl, open, onClose }) => {
+  const {signOut} = useAuth()
   const router = useRouter();
   const logOutUser = async () => {
     router.push("/");
@@ -49,7 +51,7 @@ const OptionsMenu = ({ anchorEl, open, onClose }) => {
           <ListItemIcon>
             <LogoutIcon color="primary" />
           </ListItemIcon>
-          <Button underline="none" onClick={logOutUser}>
+          <Button underline="none" onClick={signOut}>
             Logout
           </Button>
         </MenuItem>
