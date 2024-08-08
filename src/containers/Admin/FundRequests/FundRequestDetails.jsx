@@ -40,8 +40,8 @@ const FundRequestDetails = ({ details }) => {
 
   const { setFieldValue, ...formik } = useFormik({
     initialValues: {
-      transid: "",
-      transaction_amount: "",
+      transid: details?.transid,
+      transaction_amount: details?.transaction_amount,
     },
     validationSchema,
     onSubmit,
@@ -50,7 +50,8 @@ const FundRequestDetails = ({ details }) => {
   useEffect(() => {
     setFieldValue("transid", details?.transid);
     setFieldValue("transaction_amount", details?.transaction_amount);
-  }, []);
+  }, [details]);
+
   return (
     <Box sx={{ width: "100%" }}>
       <Grid
