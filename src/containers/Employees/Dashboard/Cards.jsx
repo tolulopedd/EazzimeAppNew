@@ -16,7 +16,7 @@ const Cards = ({ availableBal, utitilizedBal, repayableBal }) => {
           justifyContent: "space-between",
         }}
       >
-        <Grid item xs={12} sm={12} md={6} lg={3} >
+        <Grid item xs={12} sm={12} md={6} lg={3}>
           <Card
             sx={{
               background: "#35CB62",
@@ -60,7 +60,9 @@ const Cards = ({ availableBal, utitilizedBal, repayableBal }) => {
                         fontSize: "1.5em",
                       }}
                     >
-                      {formatAmount(availableBal)}
+                      {availableBal
+                        ? formatAmount(availableBal)
+                        : formatAmount(0)}
                     </Typography>
                   </Grid>
                   <Grid sx={{ display: "flex", justifyContent: "flex-end" }}>
@@ -115,7 +117,9 @@ const Cards = ({ availableBal, utitilizedBal, repayableBal }) => {
                         fontSize: "1.5em",
                       }}
                     >
-                      {formatAmount(utitilizedBal)}
+                      {utitilizedBal
+                        ? formatAmount(utitilizedBal)
+                        : formatAmount(0)}
                     </Typography>
                   </Grid>
                   <Grid sx={{ display: "flex", justifyContent: "flex-end" }}>
@@ -126,7 +130,7 @@ const Cards = ({ availableBal, utitilizedBal, repayableBal }) => {
             </CardContent>
           </Card>
         </Grid>
-        <Grid item xs={12} sm={12} md={12} lg={3} >
+        <Grid item xs={12} sm={12} md={12} lg={3}>
           <Card
             sx={{
               background: "#26AAE0",
@@ -170,7 +174,7 @@ const Cards = ({ availableBal, utitilizedBal, repayableBal }) => {
                         fontSize: "1.5em",
                       }}
                     >
-                      {formatAmount(repayableBal)}
+                      {repayableBal ? formatAmount(repayableBal) : formatAmount(0)}
                     </Typography>
                   </Grid>
                   <Grid sx={{ display: "flex", justifyContent: "flex-end" }}>

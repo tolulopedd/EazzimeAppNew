@@ -33,8 +33,8 @@ import { authLogin } from "@/api";
 const LoginContainer = () => {
   const matchesTwo = useMediaQuery(`(max-width:900px)`);
   const router = useRouter();
-  const {signIn} = useAuth();
-  const {displayLoader, hideLoader} = useLoader();
+  const { signIn } = useAuth();
+  const { displayLoader, hideLoader } = useLoader();
   const dispatch = useDispatch();
   const [showPassword, setShowPassword] = useState(false);
   const [loginData, setLoginData] = useState({});
@@ -58,7 +58,7 @@ const LoginContainer = () => {
 
   const onSubmit = async (values) => {
     // setLoginData(values);
-    try{
+    try {
       displayLoader();
       const authRes = await authLogin(values);
       enqueueSnackbar(authRes?.data?.status, {
@@ -70,10 +70,17 @@ const LoginContainer = () => {
         autoHideDuration: 5000,
       });
       formik.handleReset();
-      signIn(authRes)
-    }catch(err){
-      console.log("errr", err)
-    }finally{
+      signIn(authRes);
+    } catch (err) {
+      enqueueSnackbar(err?.response?.data?.status, {
+        variant: "info",
+        anchorOrigin: {
+          vertical: "top",
+          horizontal: "right",
+        },
+        autoHideDuration: 5000,
+      });
+    } finally {
       hideLoader();
     }
   };
@@ -97,7 +104,6 @@ const LoginContainer = () => {
   );
 
   const checkLoginRes = /Successful/.test(loginRes?.status);
-
 
   if (!isClient) {
     return null;

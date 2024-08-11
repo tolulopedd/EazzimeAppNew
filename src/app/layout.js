@@ -14,6 +14,7 @@ const raleway = Raleway({ subsets: ["latin"] });
 export const metadata = {
   title: "EazziMe",
   description: "Easy wage access",
+  logo:""
 };
 
 export default function RootLayout({ children }) {

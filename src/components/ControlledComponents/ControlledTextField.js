@@ -24,6 +24,7 @@ const ControlledTextField = ({
   onFileSelect,
   prioritizeError,
   variant,
+  placeholder,
   ...props
 }) => {
   const onChange = (e) => {
@@ -58,6 +59,7 @@ const ControlledTextField = ({
         name={name}
         size="small"
         autoComplete="off"
+        placeholder={placeholder}
         variant={variant || "outlined"}
         label={inFieldLabel && label}
         type={type || "text"}

@@ -26,7 +26,6 @@ const FundRequest = () => {
   const [bankInfo, setBankInfo] = useState({});
   const [transac, setTransac] = useState([]);
 
-
   const getBankDetails = async () => {
     const payload = {
       account_key: userDetails?.accountid,
@@ -72,12 +71,21 @@ const FundRequest = () => {
     getTransactions();
   }, [userDetails]);
 
+  const amountAvailable = dashData?.available_balance;
+
   useEffect(() => {
     setIsClient(true);
   }, []);
 
   const validationSchema = yup.object({
-    amount: yup.string().required("This field is required"),
+    amount: yup
+      .number()
+      .required("This field is required")
+      .min(1000, "The minimum fund you can request is 1000 Naira ")
+      .max(
+        Number(amountAvailable),
+        "You cannot request an amount that is above your available fund"
+      ),
   });
 
   const onSubmit = async (values) => {
@@ -107,7 +115,7 @@ const FundRequest = () => {
 
   const { setFieldValue, ...formik } = useFormik({
     initialValues: {
-      amount: "0.00",
+      amount: "",
       bank_account: "",
       bank: "",
     },
@@ -216,13 +224,10 @@ const FundRequest = () => {
     setFieldValue("bank_account", bankInfo?.bank_account);
   }, [userDetails, bankInfo]);
 
-  const amountAvailable = dashData?.available_balance;
-
   const option = {
     rowsPerPageOptions: [5, 10, 20],
     selectableRows: "none",
   };
-
 
   if (!isClient) {
     return null;
@@ -249,7 +254,9 @@ const FundRequest = () => {
             sx={{ display: "flex", justifyContent: "flex-start" }}
           >
             <Typography sx={{ fontWeight: "500", fontSize: "1em" }}>
-              {`How much do you need today ${userDetails?.firstname}?`}
+              {`How much do you need today ${
+                userDetails?.firstname ? userDetails?.firstname : ""
+              }?`}
             </Typography>
           </Grid>
           <Grid item xs={12} sm={12} md={3} lg={3}>
@@ -272,7 +279,9 @@ const FundRequest = () => {
                   fontWeight: "600",
                 }}
               >
-                {formatAmount(amountAvailable)}
+                {amountAvailable
+                  ? formatAmount(amountAvailable)
+                  : formatAmount(0)}
               </Typography>
             </Grid>
           </Grid>
@@ -292,6 +301,7 @@ const FundRequest = () => {
               label="Amount"
               size="small"
               type="number"
+              placeholder="0.00"
             />
           </Grid>
           <Grid item xs={12} sm={6} md={3} lg={3}>
